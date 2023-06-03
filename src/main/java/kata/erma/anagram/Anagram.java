@@ -1,6 +1,10 @@
 package kata.erma.anagram;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Anagram {
 
@@ -10,7 +14,7 @@ public class Anagram {
    * Test if the given text is an anagram of the subject.
    *
    * <p>An anagram is a word or phrase formed by rearranging the letters of a different word. <br>
-   * Time Complexity: O(n log n)
+   * Time Complexity: O(n)
    *
    * @param subject text subject
    * @param text anagram candidate
@@ -19,31 +23,30 @@ public class Anagram {
   public static boolean isAnagram(String subject, String text) {
     var result = false;
     if (subject != null && text != null) {
-      // O(n log n)
+      // O(n)
       var subjectLetters = extractLetters(subject);
-      // O(n log n)
+      // O(n)
       var textLetters = extractLetters(text);
       // O(n)
-      result = Arrays.equals(subjectLetters, textLetters);
+      result = subjectLetters.equals(textLetters);
     }
     return result;
   }
 
   /**
    * Extract letters from text. <br>
-   * Time Complexity: O(n log n)
+   * Time Complexity: O(n)
    *
    * @param text text to extract letters from
-   * @return array of letters sorted alphabetically and in lower case
+   * @return a bag of letters and their amounts
    */
-  private static Character[] extractLetters(String text) {
+  private static Map<Character, Integer> extractLetters(String text) {
+    // O(n)
     return text.chars()
-        // O(n)
         .filter(Character::isLetter)
         .map(Character::toLowerCase)
         .mapToObj(c -> (char) c)
-        // TimSort -> O(n log n)
-        .sorted()
-        .toArray(Character[]::new);
+        // O(1) insertion on HashMap
+        .collect(Collectors.groupingBy(Function.identity(), Collectors.summingInt(c -> 1)));
   }
 }
